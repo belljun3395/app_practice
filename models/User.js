@@ -6,7 +6,7 @@ Models can be defined in two ways in Sequelize.
 : sequelize.define(modelName, attributes, options)
 2) Extending Model and calling
 : init(attributes, option)
-#check in attributes we need to use Sequelize method
+#check in attributes we need sequelize to make instance
 */ 
 
 module.exports = class User extends Sequelize.Model {
