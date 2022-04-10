@@ -1,16 +1,18 @@
 var passport = require('passport');
 var local = require('./localStrategy');
+var User  = require('../models/User');
 
 module.exports = () => {
 
     local();
     
-    // write user.id data in session 
+    // user is from Local strategy exUser
+    // write user.id data in req.session.passport 
     passport.serializeUser((user, done) => {
       done(null, user.id);
     });
     
-    // use user.id data in session
+    // use user.id data in req.session.passport.user
     passport.deserializeUser((id, done) => {
       User.findOne({
         where: { id },
@@ -26,4 +28,23 @@ module.exports = () => {
       .catch(err => done(err));
     });
 
+    /* 
+    passport.serializeUser(function(user, done) {
+          done(null, user.id);
+    });                 │
+                        │ 
+                        │
+                        └─────────────────┬──→ saved to session
+                                          │    req.session.passport.user = {id: '..'}
+                                          │
+                                          ↓           
+            passport.deserializeUser(function(id, done) {
+                          ┌───────────────┘
+                          │
+                          ↓ 
+            User.findById(id, function(err, user) {
+                done(err, user);
+            });            └──────────────→ user object attaches to the request as req.user   
+    });
+    */
 };

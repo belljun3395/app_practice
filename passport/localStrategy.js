@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const { User } = require('../models');
 
 /*
-How to use Postman
+Send Form by Postman 
 1) select Body
 2) select x-www-urlencoded 
     for sending data type formField
@@ -18,7 +18,7 @@ module.exports = () => {
   passport.use(new LocalStrategy(
   /*
   options
-  Both fields define the name of properties(formFeid) in the POST body(req.body) that are sent to server
+  Both fields define the name of properties(formFeild) in the POST body(req.body) that are sent to server
   */
   {
     usernameField: 'email',
