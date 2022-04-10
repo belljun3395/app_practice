@@ -6,22 +6,32 @@ var User  = require('../models/User');
 exports.verifyToken = (req, res, next) => {
     /* 
     # workflow
+    
+    shortToken = req.headers.shorttoken || false;
+    longToken = req.headers.longtoken || false;
+
+    1) check long&short Token in req.headers. 
+    2) if there is no token make token.
+    3) there are all token exist send req.decodedShortToken
+
     longToken => true : 
         shortToken => true 
             : req.decodedShortToken => res.redirect('/')
         shortToken => false 
             : check DB => false
-                : delete longToken and back to GET /users/login
+                : delete longToken => res.redirect('/users/login')
             : check DB => true 
-                : make shorToken, req.headers.authorization.shorttoken and req.decodedShortToken => next()
+                : make shorToken, req.headers.authorization.shorttoken and req.decodedShortToken 
+                    => res.redirect('/')
     longToken => false : 
         shortToken => true 
-            : make longToken, update DB jwtId and req.decodedShortToken => next()
+            : make longToken, update DB jwtId, req.headers.authorization.longtoken and req.decodedShortToken 
+                => res.redirect('/')
         shortToken => false 
             : referer => login 
                 : next()
             : reforer => etc
-                : back to login page
+                : res.redirect('/users/login')
     */
     
     // #check at req.headers, there is no difference between upper and lower
@@ -36,7 +46,7 @@ exports.verifyToken = (req, res, next) => {
         try {
             console.log("##########################")
             console.log("long : true , short : true")
-            req.decodedShortToken = decodeToken(longToken);
+            req.decodedShortToken = decodeToken(shortToken);
             res.redirect('/');
         } catch (error) {
             if (error.name === 'TokenExpiredError') { 
@@ -89,10 +99,11 @@ exports.verifyToken = (req, res, next) => {
                 }, {
                 where : {email : decodedShortToken.id}
                 })
+            req.headers.authorization.longtoken = makeLongToken;
             req.decodedShortToken = decodedShortToken;
             console.log("##########################")
             console.log("long : false , short : true")
-            next();
+            res.redirect('/');
         } else {
             var isLogin = path.parse(req.headers.referer).dir
             if(isLogin == 'http://localhost:3000/users') {
