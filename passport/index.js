@@ -12,17 +12,10 @@ module.exports = () => {
       done(null, user.id);
     });
     
-    // use user.id data in req.session.passport.user
+    // use id data in req.session.passport.user.id
     passport.deserializeUser((id, done) => {
       User.findOne({
-        where: { id },
-        include: [{
-          model: User,
-          attributes: ['id', 'nick'],
-        }, {
-          model: User,
-          attributes: ['id', 'nick'],
-        }],
+        where: { id }
       })
       .then(user => done(null, user))
       .catch(err => done(err));

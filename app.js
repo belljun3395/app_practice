@@ -45,6 +45,7 @@ app.use(session({
     secure : false,
   },
 }));
+
 // initialize() method setups the functions to serialize/deserialize the user data from the request.
 // #check why initialize method use before session method?
 app.use(passport.initialize());
