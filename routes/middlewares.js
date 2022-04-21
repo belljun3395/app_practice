@@ -4,49 +4,40 @@ var path = require('path');
 var passport = require('passport');
 var User  = require('../models/User');
 
+// function
+var consoleHash = function(innerText) {
+    console.log("#######################");
+    console.log(innerText);
+    console.log("#######################");
+}
+
+var signToken = function (idSource, expiresTime) {
+    return jwt.sign(
+        {
+          id : idSource,
+          jwtId : uuidv4()
+        },
+        process.env.JWT_SECRET, 
+        {
+          expiresIn: expiresTime, 
+          issuer: 'jongjun',
+        });
+}
+
+var decodeToken = function(tokenType) {
+    return jwt.verify(tokenType , process.env.JWT_SECRET);
+}
+
+// exports module
 exports.verifyToken = (req, res, next) => {
-    /* 
-    # workflow
     
-    shortToken = req.headers.shorttoken || false;
-    longToken = req.headers.longtoken || false;
-
-    1) check long&short Token in req.headers. 
-    2) if there is no token make token.
-    3) there are all token exist send req.decodedShortToken
-
-    longToken => true : 
-        shortToken => true 
-            : req.decodedShortToken => res.redirect('/')
-        shortToken => false 
-            : check DB => false
-                : delete longToken => res.redirect('/users/login')
-            : check DB => true 
-                : make shorToken, req.headers.authorization.shorttoken and req.decodedShortToken 
-                    => res.redirect('/')
-    longToken => false : 
-        shortToken => true 
-            : make longToken, update DB jwtId, req.headers.authorization.longtoken and req.decodedShortToken 
-                => res.redirect('/')
-        shortToken => false 
-            : referer => login 
-                : next()
-            : reforer => etc
-                : res.redirect('/users/login')
-    */
-    
-    // #check at req.headers, there is no difference between upper and lower
+    // #check1 
     const shortToken = req.headers.shorttoken || false;
     const longToken = req.headers.longtoken || false;
 
-    var decodeToken = function(type) {
-        jwt.verify(type , process.env.JWT_SECRET);
-    }
-
     if (longToken) {
         try {
-            console.log("##########################")
-            console.log("long : true , short : true")
+            consoleHash("long : true , short : true");
             req.decodedShortToken = decodeToken(shortToken);
             res.redirect('/');
         } catch (error) {
@@ -59,21 +50,10 @@ exports.verifyToken = (req, res, next) => {
                     delete longToken;
                     res.redirect('/users/login');
                 } else {
-                    const makeShortToken = jwt.sign(
-                        { 
-                            id : decodedLongTokenJwt.id,
-                            jwtId : uuidv4(),
-                        },
-                        process.env.JWT_SECRET, 
-                        { 
-                            expiresIn: "2hour", 
-                            issuer: 'jongjun',
-                        }
-                    );
-                    req.headers.authorization.shorttoken = makeShortToken;
-                    req.decodedShortToken = decodeToken(makeShortToken);
-                    console.log("##########################")
-                    console.log("long : true , short : false");
+                    const signedShortToken = signToken(decodedLongTokenJwt.id, "2hour");
+                    req.headers.authorization.shorttoken = signedShortToken;
+                    req.decodedShortToken = decodeToken(signedShortToken);
+                    consoleHash("long : true , short : false");
                     res.redirect('/');
                 }
             }
@@ -85,35 +65,23 @@ exports.verifyToken = (req, res, next) => {
     } else {
         if(shortToken){
             var decodedShortToken = decodeToken(shortToken);
-            const makeLongToken =  jwt.sign(
-                {
-                    id : decodedShortToken.id,
-                    jwtId : uuidv4(),
-                },
-                process.env.JWT_SECRET, 
-                {
-                    expiresIn: "2day", 
-                    issuer: 'jongjun',
-                });
+            const signedLongToken = signToken(decodedShortToken.id, "2day");
             User.update({
-                jwtId : decodeToken(makeLongToken).jwtId,
+                jwtId : decodeToken(signedLongToken).jwtId,
                 }, {
                 where : {email : decodedShortToken.id}
                 })
-            req.headers.authorization.longtoken = makeLongToken;
+            req.headers.authorization.longtoken = signedLongToken;
             req.decodedShortToken = decodedShortToken;
-            console.log("##########################")
-            console.log("long : false , short : true")
+            consoleHash("long : false , short : true");
             res.redirect('/');
         } else {
             var isLogin = path.parse(req.headers.referer).dir
             if(isLogin == 'http://localhost:3000/users') {
-                console.log("##########################")
-                console.log("long : false , short : false, referer : login")
+                consoleHash("long : false , short : false, referer : login");
                 next();
             } else {
-                console.log("##########################")
-                console.log("long : false , short : false, referer : etc")
+                consoleHash("long : false , short : false, referer : etc");
                 res.redirect('/users/login')
             }
             
@@ -122,6 +90,7 @@ exports.verifyToken = (req, res, next) => {
 }
 
 exports.authenticate = (req, res, next) => {
+    
     passport.authenticate('local', (authError, user, info) => {
       if (authError) {
         console.error(authError);
@@ -135,33 +104,16 @@ exports.authenticate = (req, res, next) => {
           console.error(loginError);
           return next(loginError);
         }
-        // #check how to make below jwt.sign to function
-        const longToken =  jwt.sign(
-          {
-            id : user.email,
-            jwtId : uuidv4()
-          },
-          process.env.JWT_SECRET, 
-          {
-            expiresIn: "2day", 
-            issuer: 'jongjun',
-          });
-          const shortToken =  jwt.sign(
-            {
-              id : user.email,
-              jwtId : uuidv4()
-            },
-            process.env.JWT_SECRET, 
-            {
-              expiresIn: "2hour", 
-              issuer: 'jongjun',
-            });
+        // #check2 
+        const longToken = signToken(user.email, "2day");
+        const shortToken = signToken(user.email, "2hour");
         User.update({
           jwtId : jwt.verify(longToken, process.env.JWT_SECRET).jwtId,
         }, {
           where : {email : user.email}
         })
-        return res.send('send shortToken :\n'+shortToken+'\n send longToken :\n'+longToken);
+        return res.send('send shortToken :\n'+shortToken+'\n'+'send longToken :\n'+longToken);
       });
     })(req, res, next);
 }
+
