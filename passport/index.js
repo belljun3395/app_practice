@@ -1,6 +1,6 @@
 var passport = require('passport');
 var local = require('./localStrategy');
-var User  = require('../models/User');
+var User = require('../sequelize/models/User');
 
 module.exports = () => {
 

@@ -4,7 +4,7 @@
 initialize() method setups the functions to serialize/deserialize the user data from the request.<br>
 why initialize method use before session method?<br>
 
-# route/middelwares.js
+# src/route/middelwares.js
 
 ## check1 
 at req.headers, there is no difference between upper and lower<br>
@@ -78,3 +78,23 @@ Both types are sended in req.body
 ## strategy options
 Both fields define the name of properties(formFeild) in the POST body(req.body) which are sent to server
 
+# sequelize/models/User.js
+
+Models can be defined in two ways in Sequelize.
+1) Calling
+: sequelize.define(modelName, attributes, options)
+2) Extending Model and calling
+: init(attributes, option)
+
+## check1
+in attributes we need sequelize to make instance
+
+# sequelize/models/index.js
+
+## check1
+for exports 
+```
+const db = {};
+db.User = User;
+db.sequelize = sequelize; 
+```

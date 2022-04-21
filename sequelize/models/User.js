@@ -1,14 +1,6 @@
 const { DataTypes, Sequelize } = require('sequelize');
 
-/* 
-Models can be defined in two ways in Sequelize.
-1) Calling
-: sequelize.define(modelName, attributes, options)
-2) Extending Model and calling
-: init(attributes, option)
-#check in attributes we need sequelize to make instance
-*/ 
-
+//#check1
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
