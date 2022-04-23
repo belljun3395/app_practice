@@ -1,21 +1,21 @@
 // add npm  
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var sequelize = require('./sequelize/models').sequelize
-var session = require('express-session');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var passport = require('passport');
+var createError = require('http-errors'),
+    express = require('express'),
+    path = require('path'),
+    logger = require('morgan'),
+    sequelize = require('./sequelize/models').sequelize,
+    session = require('express-session'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    passport = require('passport');
 
 // add config  
-var dotenv = require('dotenv');
-var passportConfig = require('./passport');
+var dotenv = require('dotenv'),
+    passportConfig = require('./passport');
 
 // add router  
-var indexRouter = require('./src/routes/index');
-var usersRouter = require('./src/routes/users');
+var indexRouter = require('./src/routes/index'),
+    usersRouter = require('./src/routes/users');
 
 // serverStart  
 dotenv.config();

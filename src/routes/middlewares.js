@@ -1,8 +1,8 @@
-var jwt = require('jsonwebtoken');
-var { v4: uuidv4 } = require('uuid');
-var path = require('path');
-var passport = require('passport');
-var User  = require('../../sequelize/models/User');
+var jwt = require('jsonwebtoken'),
+    { v4: uuidv4 } = require('uuid'),
+    path = require('path'),
+    passport = require('passport'),
+    User  = require('../../sequelize/models/User');
 
 // function
 var consoleHash = function(innerText) {
