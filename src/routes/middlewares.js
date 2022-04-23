@@ -20,7 +20,7 @@ var signToken = function (idSource, expiresTime) {
         process.env.JWT_SECRET, 
         {
           expiresIn: expiresTime, 
-          issuer: 'jongjun',
+          issuer: process.env.JWT_ISSUER,
         });
 }
 
@@ -31,7 +31,8 @@ var decodeToken = function(tokenType) {
 // exports module
 exports.verifyToken = (req, res, next) => {
     
-    // #check1 
+    // #check1
+    // #check3 
     const shortToken = req.headers.shorttoken || false;
     const longToken = req.headers.longtoken || false;
 
@@ -51,7 +52,7 @@ exports.verifyToken = (req, res, next) => {
                     res.redirect('/users/login');
                 } else {
                     const signedShortToken = signToken(decodedLongTokenJwt.id, "2hour");
-                    req.headers.authorization.shorttoken = signedShortToken;
+                    req.headers.shorttoken = signedShortToken;
                     req.decodedShortToken = decodeToken(signedShortToken);
                     consoleHash("long : true , short : false");
                     res.redirect('/');
@@ -71,7 +72,7 @@ exports.verifyToken = (req, res, next) => {
                 }, {
                 where : {email : decodedShortToken.id}
                 })
-            req.headers.authorization.longtoken = signedLongToken;
+            req.headers.longtoken = signedLongToken;
             req.decodedShortToken = decodedShortToken;
             consoleHash("long : false , short : true");
             res.redirect('/');
@@ -90,8 +91,7 @@ exports.verifyToken = (req, res, next) => {
 }
 
 exports.authenticate = (req, res, next) => {
-    
-    passport.authenticate('local', (authError, user, info) => {
+    passport.authenticate('local', (authError, user) => {
       if (authError) {
         console.error(authError);
         return next(authError);
@@ -104,7 +104,7 @@ exports.authenticate = (req, res, next) => {
           console.error(loginError);
           return next(loginError);
         }
-        // #check2 
+        // #check2 => done
         const longToken = signToken(user.email, "2day");
         const shortToken = signToken(user.email, "2hour");
         User.update({
@@ -116,4 +116,3 @@ exports.authenticate = (req, res, next) => {
       });
     })(req, res, next);
 }
-

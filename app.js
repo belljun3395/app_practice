@@ -27,7 +27,7 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 
 // view engine setup  
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '/src/views'));
 app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '/src/public')));
 
@@ -46,7 +46,7 @@ app.use(session({
   },
 }));
 
-// #check1
+// #check1 => done
 app.use(passport.initialize());
 app.use(passport.session());
 

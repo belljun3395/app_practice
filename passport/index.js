@@ -5,7 +5,7 @@ var User = require('../sequelize/models/User');
 module.exports = () => {
 
     local();
-    
+
     passport.serializeUser((user, done) => {
       done(null, user.id);
     });

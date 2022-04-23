@@ -1,18 +1,23 @@
 # app.js
 
-## check1
-initialize() method setups the functions to serialize/deserialize the user data from the request.<br>
-why initialize method use before session method?<br>
+## ~check1~
+initialize() method setups the functions to serialize/deserialize the user data from the request.
+why initialize method use before session method?
+---
+initialize method make passport instance 
 
 # src/route/middelwares.js
 
 ## check1 
-at req.headers, there is no difference between upper and lower<br>
+at req.headers, there is no difference between upper and lower
 
-## check2
-how to make below jwt.sign to function<br>
+## ~check2~
+how to make below jwt.sign to function
 
-## workflow
+## check3
+how to push token into Authorization header
+
+## Workflow
 
 1) check long&short Token in req.headers. 
 2) if there is no token make token.
@@ -43,7 +48,7 @@ longToken => false :
 
 # passport/index.js
 
-## how to work passport 
+## How to work passport 
 ```
 passport.serializeUser(function(user, done) {
         done(null, user.id);
@@ -66,16 +71,16 @@ passport.serializeUser(function(user, done) {
 
 # passport/localStrategy.js
 
-## how to use Postman
+## How to use Postman
 Send Form by Postman 
 
 1) select Body
-2) select x-www-urlencoded for sending data type formField<br>
-  ( Usually, we use raw, type JSON )
+2) select x-www-urlencoded for sending data type formField
+    ( Usually, we use raw, type JSON )
 
 Both types are sended in req.body
 
-## strategy options
+## Strategy options
 Both fields define the name of properties(formFeild) in the POST body(req.body) which are sent to server
 
 # sequelize/models/User.js
@@ -87,12 +92,12 @@ Models can be defined in two ways in Sequelize.
 : init(attributes, option)
 
 ## check1
-in attributes we need sequelize to make instance
+in attributes, sequelize make instance?
 
 # sequelize/models/index.js
 
 ## check1
-for exports 
+for exports?
 ```
 const db = {};
 db.User = User;
