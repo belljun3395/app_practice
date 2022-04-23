@@ -42,26 +42,20 @@ exports.verifyToken = (req, res, next) => {
             req.decodedShortToken = decodeToken(shortToken);
             res.redirect('/');
         } catch (error) {
-            if (error.name === 'TokenExpiredError') { 
-                const decodedLongTokenJwt = decodeToken(longToken);
-                const checkDBLongToken = User.findOne({
-                    where : { jwtId : decodedLongTokenJwt.jwtId }
-                });
-                if (!checkDBLongToken) {
-                    delete longToken;
-                    res.redirect('/users/login');
-                } else {
-                    const signedShortToken = signToken(decodedLongTokenJwt.id, "2hour");
-                    req.headers.shorttoken = signedShortToken;
-                    req.decodedShortToken = decodeToken(signedShortToken);
-                    consoleHash("long : true , short : false");
-                    res.redirect('/');
-                }
-            }
-            return res.status(401).json({
-                code: 401,
-                message : '유효하지 않은 토큰입니다',
+            const decodedLongTokenJwt = decodeToken(longToken);
+            const checkDBLongToken = User.findOne({
+                where : { jwtId : decodedLongTokenJwt.jwtId }
             });
+            if (!checkDBLongToken) {
+                delete longToken;
+                res.redirect('/users/login');
+            } else {
+                const signedShortToken = signToken(decodedLongTokenJwt.id, "2hour");
+                req.headers.shorttoken = signedShortToken;
+                req.decodedShortToken = decodeToken(signedShortToken);
+                consoleHash("long : true , short : false");
+                res.redirect('/');
+            }
         }
     } else {
         if(shortToken){
@@ -112,6 +106,7 @@ exports.authenticate = (req, res, next) => {
         }, {
           where : {email : user.email}
         })
+        res.set({"shorttoken" :  shortToken, "longtoken" : longToken});
         return res.send('send shortToken :\n'+shortToken+'\n'+'send longToken :\n'+longToken);
       });
     })(req, res, next);
