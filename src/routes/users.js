@@ -1,8 +1,8 @@
 var express = require('express'),
     router = express.Router();
 
-var { verifyToken, authenticate } = require('./middlewares');
+var { verifyToken,verifyCookieToken ,authenticate } = require('./middlewares');
 
-router.post('/login', verifyToken, authenticate );
+router.post('/login', verifyCookieToken, authenticate );
 
 module.exports = router;

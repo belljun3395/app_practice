@@ -8,7 +8,7 @@ initialize method make passport instance
 
 # src/route/middelwares.js
 
-## check1 
+## ~check1~ 
 at req.headers, there is no difference between upper and lower
 
 ## ~check2~
@@ -16,6 +16,12 @@ how to make below jwt.sign to function
 
 ## check3
 how to push token into Authorization header
+
+## check4
+how to send res.headers on res.redirect
+
+## check5
+send jwt token by cookie? or authorization?
 
 ## Workflow
 
@@ -44,6 +50,16 @@ longToken => false :
             : next()
         : referer => etc
             : res.redirect('/users/login')
+```
+```
+shortToken = cookie.parse(req.headers.cookie).shorttoken
+shortToken 
+=> true :
+        check DB is shortToken id == longToken id 
+        => true : res.cookie(decodedShortToken) & res.redirect('/')
+        => false : delete req.headers.cookeie.shorttoken & res.redirect('/users/login')
+=> false : 
+        res.redirect('/users/login')
 ```
 
 # passport/index.js
