@@ -1,11 +1,14 @@
 var passport = require('passport'),
-    local = require('./localStrategy');
+    local = require('./localStrategy'),
+    jwt = require('./jwtStrategy');
 
 var User = require('../sequelize/models/User');
 
 module.exports = () => {
 
     local();
+    
+    jwt();
 
     passport.serializeUser((user, done) => {
       done(null, user.id);

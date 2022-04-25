@@ -87,6 +87,9 @@ passport.serializeUser(function(user, done) {
 
 # passport/localStrategy.js
 
+## check1 
+select exUser's information
+
 ## How to use Postman
 Send Form by Postman 
 
@@ -98,6 +101,11 @@ Both types are sended in req.body
 
 ## Strategy options
 Both fields define the name of properties(formFeild) in the POST body(req.body) which are sent to server
+
+# passport/jwtStrategy.js
+
+## check1 
+select exUser's information
 
 # sequelize/models/User.js
 
