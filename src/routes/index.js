@@ -7,7 +7,7 @@ var consoleHash = function(innerText) {
   console.log("#######################");
   console.log(innerText);
   console.log("#######################");
-}
+};
   
 
 /* GET home page. */

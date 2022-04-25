@@ -23,6 +23,9 @@ how to send res.headers on res.redirect
 ## check5
 send jwt token by cookie? or authorization?
 
+## check6
+how to handle false?
+
 ## Workflow
 
 1) check long&short Token in req.headers. 
