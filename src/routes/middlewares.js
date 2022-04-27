@@ -87,25 +87,33 @@ exports.verifyToken = (req, res, next) => {
   };
 };
 
-exports.verifyCookieToken = (req, res, next) => { 
+exports.verifyCookieToken = async (req, res, next) => { 
   if(req.headers.cookie){
-    var shortToken = cookie.parse(req.headers.cookie).shorttoken;
-    var decodedShortToken = decodeToken(shortToken);
-    res.cookie("decodedShortToken" , decodedShortToken);
-    try {
-    User.findOne({
-      where : { jwtId : decodedShortToken.jwtId }
-    })
-    .then(
-      consoleHash("cookieShortToken : true, checkDB : true"),
-      res.redirect("/")
-    )
-    .catch(err => done(err));
-    } catch(err){
-    consoleHash(err.name);
-    delete shortToken;
-    res.redirect('/users/login');
+    var reqCookie = cookie.parse(req.headers.cookie);
+    if(reqCookie.shorttoken) {
+      var shortToken =reqCookie.shorttoken;
+      var decodedShortToken = decodeToken(shortToken);
+      try {
+        try{
+          var exUser = await User.findOne({
+              where : { jwtId : decodedShortToken.jwtId }
+            })
+        consoleHash("cookieShortToken : true, checkDB : true");
+        res.send(exUser);
+        } catch(err) {
+          delete decodedShortToken;
+          res.redirect('/users/login');
+        }
+      } catch(err){
+      consoleHash(err.name);
+      delete shortToken;
+      res.redirect('/users/login');
+      }
+    } else {
+      consoleHash("reqCookie.shorttoken : false, login");
+      next();
     }
+    
   } else {
     consoleHash("cookieShortToken : false, login");
     next();
@@ -114,10 +122,19 @@ exports.verifyCookieToken = (req, res, next) => {
 
 exports.verifyJwtToken = (req, res, next) => {
   var headerAuth = req.header("authorization");
-  if(headerAuth){
-    passport.authenticate('jwt', { session : false })(req,res,next);
-  } else {
+  if( headerAuth == "Bearer null" ){
     res.redirect('/users/login');
+  } else {
+    passport.authenticate('jwt', { session : false },(authError, user)=> {
+      if (authError) {
+        console.error(authError);
+        return next(authError);
+      };
+      if (!user) {
+        return res.send('NO EXISTING USER');
+      };
+      return res.send(user);
+      })(req,res,next);
   };
 };
 
@@ -147,7 +164,6 @@ exports.authenticate = (req, res, next) => {
         // #check5
         res.cookie("shorttoken", shortToken);
         res.set("authorization", shortToken);
-        // return res.redirect("/")
         return res.send('send shortToken :\n'+shortToken+'\n'+'send longToken :\n'+longToken);
       });
     })(req, res, next);
