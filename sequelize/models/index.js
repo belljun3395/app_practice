@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
   config
 );
 
-// #check1
+// #check1 => done
 const db = {};
 db.User = User;
 db.sequelize = sequelize; 

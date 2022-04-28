@@ -14,17 +14,17 @@ at req.headers, there is no difference between upper and lower
 ## ~check2~
 how to make below jwt.sign to function
 
-## check3
+## ~check3~
 how to push token into Authorization header
+=> res.set("authorization", shortToken);
 
-## check4
+## ~check4~
 how to send res.headers on res.redirect
+=> by res.cookie
 
-## check5
+## ~check5~
 send jwt token by cookie? or authorization?
-
-## check6
-how to handle false?
+=> cookie remain after res.redirect but authorization header doesn't remain after res.redirect
 
 ## Workflow
 
@@ -90,8 +90,8 @@ passport.serializeUser(function(user, done) {
 
 # passport/localStrategy.js
 
-## check1 
-select exUser's information
+## ~check1~ 
+select exUser's column
 
 ## How to use Postman
 Send Form by Postman 
@@ -107,8 +107,18 @@ Both fields define the name of properties(formFeild) in the POST body(req.body) 
 
 # passport/jwtStrategy.js
 
-## check1 
+## ~check1~
 select exUser's information
+
+# sequelize/models/index.js
+
+## ~check1~
+for exports?
+```
+const db = {};
+db.User = User;
+db.sequelize = sequelize; 
+```
 
 # sequelize/models/User.js
 
@@ -118,15 +128,7 @@ Models can be defined in two ways in Sequelize.
 2) Extending Model and calling
 : init(attributes, option)
 
-## check1
+## ~check1~
 in attributes, sequelize make instance?
 
-# sequelize/models/index.js
 
-## check1
-for exports?
-```
-const db = {};
-db.User = User;
-db.sequelize = sequelize; 
-```

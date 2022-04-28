@@ -1,6 +1,6 @@
 const { DataTypes, Sequelize } = require('sequelize');
 
-//#check1
+// #check1 => done
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
     return super.init({

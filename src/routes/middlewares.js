@@ -33,12 +33,12 @@ var decodeToken = function(tokenType) {
 
 exports.verifyToken = (req, res, next) => {
     
-  // #check1
-  // #check3 
+  // #check1 => done
+  // #check3 => done
   var shortToken = req.headers.shorttoken;
   var longToken = req.headers.longtoken;
 
-  // #check4
+  // #check4 => done
   if (longToken) {
       try {
           consoleHash("long : true , short : true");
@@ -161,7 +161,7 @@ exports.authenticate = (req, res, next) => {
         }, {
           where : {email : user.email}
         })
-        // #check5
+        // #check5 => done
         res.cookie("shorttoken", shortToken);
         res.set("authorization", shortToken);
         return res.send('send shortToken :\n'+shortToken+'\n'+'send longToken :\n'+longToken);

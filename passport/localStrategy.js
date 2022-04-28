@@ -13,7 +13,7 @@ module.exports = () => {
   }, 
   async (email, password, done) => {
       try {
-        // #check1  
+        // #check1 => done
         const exUser = await User.findOne({ where: { email } });
         if (exUser) {
           // before making join api
