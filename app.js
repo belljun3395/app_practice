@@ -3,9 +3,9 @@ var createError = require('http-errors'),
     express = require('express'),
     path = require('path'),
     logger = require('morgan'),
+    cookieParser = require('cookie-parser'),
     sequelize = require('./sequelize/models').sequelize,
     session = require('express-session'),
-    cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     passport = require('passport');
 
@@ -22,6 +22,7 @@ dotenv.config();
 sequelize.sync();
 passportConfig();
 
+// start express
 var app = express();
 
 app.set('port', process.env.PORT || 3000);
@@ -46,7 +47,6 @@ app.use(session({
   },
 }));
 
-// #check1 => done
 app.use(passport.initialize());
 app.use(passport.session());
 

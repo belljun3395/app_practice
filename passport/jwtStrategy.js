@@ -10,7 +10,6 @@ opts.secretOrKey = 'jwtSecret';
 opts.issuer = "jongjun";
 
 module.exports = () => {
-    // #check1 => done
     passport.use("jwt", new JwtStrategy(opts, async function(jwt_payload, done) {
         const exUser = await User.findOne({ where : { jwtId : jwt_payload.jwtId }});
         if(exUser){

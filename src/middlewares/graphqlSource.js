@@ -1,0 +1,1 @@
+exports.sourceValue = '{ user(id:1) {id} data(id:1) {id} dataTest(id:1) {id} }'

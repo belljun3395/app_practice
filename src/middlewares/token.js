@@ -1,13 +1,20 @@
-// middlewares/verify
+var { v4: uuidv4 } = require('uuid'),
+    path = require('path'),
+    passport = require('passport'),
+    cookie = require('cookie'),
+    User  = require('../../sequelize/models/User');
 
+// function
+var { signToken, decodeToken} = require('../function/token');
+var { consoleHash } =require('../function/console');
+
+
+// exports module
 exports.verifyToken = (req, res, next) => {
-    
-    // #check1 => done
-    // #check3 => done
+
     var shortToken = req.headers.shorttoken;
     var longToken = req.headers.longtoken;
   
-    // #check4 => done
     if (longToken) {
         try {
             consoleHash("long : true , short : true");
@@ -53,5 +60,58 @@ exports.verifyToken = (req, res, next) => {
             }
             
         };
+    };
+  };
+  
+  exports.verifyCookieToken = async (req, res, next) => { 
+    if(req.headers.cookie){
+      var reqCookie = cookie.parse(req.headers.cookie);
+      if(reqCookie.shorttoken) {
+        var shortToken =reqCookie.shorttoken;
+        var decodedShortToken = decodeToken(shortToken);
+        try {
+          try{
+            var exUser = await User.findOne({
+                where : { jwtId : decodedShortToken.jwtId }
+              })
+          consoleHash("cookieShortToken : true, checkDB : true");
+          res.send(exUser);
+          } catch(err) {
+            delete shortToken;
+            delete decodedShortToken;
+            res.redirect('/users/login');
+          }
+        } catch(err){
+        consoleHash(err.name);
+        delete shortToken;
+        delete decodedShortToken;
+        res.redirect('/users/login');
+        }
+      } else {
+        consoleHash("reqCookie.shorttoken : false, login");
+        next();
+      }
+      
+    } else {
+      consoleHash("cookieShortToken : false, login");
+      next();
+    };
+  };
+  
+  exports.verifyJwtToken = (req, res, next) => {
+    var headerAuth = req.header("authorization");
+    if( headerAuth == undefined ){
+      res.redirect('/users/login');
+    } else {
+      passport.authenticate('jwt', { session : false },(authError, user)=> {
+        if (authError) {
+          console.error(authError);
+          return next(authError);
+        };
+        if (!user) {
+          return res.send('NO EXISTING USER');
+        };
+        return res.send(user);
+        })(req,res,next);
     };
   };
