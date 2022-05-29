@@ -6,7 +6,7 @@ var { v4: uuidv4 } = require('uuid'),
 
 // function
 var { signToken, decodeToken} = require('../function/token');
-var { consoleHash } =require('../function/console');
+var { consoleWith } =require('../function/console');
 
 
 // exports module
@@ -17,7 +17,7 @@ exports.verifyToken = (req, res, next) => {
   
     if (longToken) {
         try {
-            consoleHash("long : true , short : true");
+            consoleWith("#", "long : true , short : true");
             req.decodedShortToken = decodeToken(shortToken);
             res.redirect('/');
         } catch (error) {
@@ -32,7 +32,7 @@ exports.verifyToken = (req, res, next) => {
                 const signedShortToken = signToken(decodedLongTokenJwt.id, "2hour");
                 req.headers.shorttoken = signedShortToken;
                 req.decodedShortToken = decodeToken(signedShortToken);
-                consoleHash("long : true , short : false");
+                consoleWith("#", "long : true , short : false");
                 res.redirect('/');
             };
         }
@@ -47,15 +47,15 @@ exports.verifyToken = (req, res, next) => {
                 })
             req.headers.longtoken = signedLongToken;
             req.decodedShortToken = decodedShortToken;
-            consoleHash("long : false , short : true");
+            consoleWith("#", "long : false , short : true");
             res.redirect('/');
         } else {
             var isLogin = path.parse(req.headers.referer).dir;
             if(isLogin == 'http://localhost:3000/users') {
-                consoleHash("long : false , short : false, referer : login");
+                consoleWith("#", "long : false , short : false, referer : login");
                 next();
             } else {
-                consoleHash("long : false , short : false, referer : etc");
+                consoleWith("#", "long : false , short : false, referer : etc");
                 res.redirect('/users/login');
             }
             
@@ -74,7 +74,7 @@ exports.verifyToken = (req, res, next) => {
             var exUser = await User.findOne({
                 where : { jwtId : decodedShortToken.jwtId }
               })
-          consoleHash("cookieShortToken : true, checkDB : true");
+          consoleWith("#", "cookieShortToken : true, checkDB : true");
           res.send(exUser);
           } catch(err) {
             delete shortToken;
@@ -82,18 +82,18 @@ exports.verifyToken = (req, res, next) => {
             res.redirect('/users/login');
           }
         } catch(err){
-        consoleHash(err.name);
+        consoleWith("#", err.name);
         delete shortToken;
         delete decodedShortToken;
         res.redirect('/users/login');
         }
       } else {
-        consoleHash("reqCookie.shorttoken : false, login");
+        consoleWith("#", "reqCookie.shorttoken : false, login");
         next();
       }
       
     } else {
-      consoleHash("cookieShortToken : false, login");
+      consoleWith("#", "cookieShortToken : false, login");
       next();
     };
   };
