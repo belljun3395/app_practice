@@ -6,20 +6,22 @@ module.exports = class User extends Sequelize.Model {
       email: {
         type: DataTypes.STRING(40),
         allowNull: true,
-        unique: true,
-      },
-      nick: {
-        type: DataTypes.STRING(15),
-        allowNull: false,
+        unique: false,
       },
       password: {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
-      jwtId : {
-        type: DataTypes.STRING(100),
+      Given_name: {
+        type: DataTypes.STRING(40),
         allowNull: true,
-      }
+        unique: false,
+      },
+      Last_name : {
+        type: DataTypes.STRING(40),
+        allowNull: true,
+        unique: false,
+      },
     }, {
       sequelize,
       timestamps: true,
@@ -31,6 +33,7 @@ module.exports = class User extends Sequelize.Model {
       collate: 'utf8_general_ci',
     });
   }
+  
   static associate(db) {
     db.User.hasMany(db.Data);
     db.User.hasOne(db.Icon);

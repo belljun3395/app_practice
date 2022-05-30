@@ -47,14 +47,13 @@ exports.join = async (req, res, next) => {
     if (exUser) {
       return res.redirect('/join?error=exist');
     }
-    await User.create({
+    var userData = await User.create({
       email,
       password,
       Given_name,
       Last_name
     });
-    userIdData = await User.findOne({where : {email}});
-    await Icon.create({linkedin : "0", github : "0", facebook : "0", twitter : "0", UserId : userIdData.id})
+    await userData.createIcon({linkedin : "0", github : "0", facebook : "0", twitter : "0"})
     return res.redirect('/users/login');
   } catch (error) {
     console.error(error);

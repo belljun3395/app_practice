@@ -4,7 +4,7 @@ var express = require('express'),
 
 
 var { verifyJwtToken, verifyCookieToken } =require('../middlewares/token')
-var { authenticate } = require('../middlewares/verify');
+var { authenticate, join } = require('../middlewares/verify');
 var { graphqlTest } = require('../middlewares/graphql');
 var { schema, rootValue } = require('../../grqphql/models/index')
 
@@ -17,11 +17,17 @@ router.get('/login', function(req,res) {
 
 
 router.post('/login', verifyCookieToken, authenticate );
+
 router.post('/loginjwt',  verifyJwtToken);
+
 router.post('/image', multer.single("fieldName"), function(req,res){
     res.send(req.file)
 });
+
+router.post('/postman/join', join)
+
 router.post('/postman/graphql', graphqlTest)
+
 
 router.use('/test/graphql', graphqlHTTP({
     schema: schema,

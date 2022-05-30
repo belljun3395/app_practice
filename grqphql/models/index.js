@@ -20,7 +20,7 @@ exports.schema = buildSchema(`${Schema}`);
 exports.rootValue = {
     user : userValue.user,
     data : dataValue.data,
-    dataTest : dataValue.dataTest,
+    dataArray : dataValue.dataArray,
     test : () => { return "hello"}
 };
 

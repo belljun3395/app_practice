@@ -27,4 +27,8 @@ User.init(sequelize);
 Data.init(sequelize);
 Icon.init(sequelize);
 
+User.associate(db);
+Data.associate(db);
+Icon.associate(db);
+
 module.exports = db;

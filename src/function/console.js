@@ -6,11 +6,11 @@ exports.consoleHash = function(innerText) {
 };
 
 exports.consoleWith = function( icon, innerText) {
-    var result = ""
+    var iconResult = ""
     for (var i = 0; i < 100 ; i++) {
-        result += icon;
+        iconResult += icon;
     }
-    console.log(result)
+    console.log(iconResult)
     console.log(innerText)
-    console.log(result)
+    console.log(iconResult)
 }
