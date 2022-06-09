@@ -10,7 +10,7 @@ var { schema, rootValue } = require('../../grqphql/models/index')
 
 var multer = require("../middlewares/multerObj");
 
-
+/* GET sign in page. */
 router.get('/login', function(req,res) {
     res.send("Login Pleaze");
 })

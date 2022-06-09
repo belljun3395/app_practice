@@ -22,6 +22,11 @@ module.exports = class User extends Sequelize.Model {
         allowNull: true,
         unique: false,
       },
+      jwtId: {
+        type: DataTypes.TEXT('long'),
+        allowNull: true,
+        unique: false,
+      }
     }, {
       sequelize,
       timestamps: true,
