@@ -9,6 +9,8 @@ var createError = require('http-errors'),
     bodyParser = require('body-parser'),
     passport = require('passport');
 
+const { swaggerUi, specs } = require('./src/modules/swagger');
+
 // add config  
 var dotenv = require('dotenv'),
     passportConfig = require('./passport');
@@ -51,6 +53,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // routerMiddleware  
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

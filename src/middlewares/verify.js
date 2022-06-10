@@ -34,7 +34,7 @@ exports.authenticate = (req, res, next) => {
         })
         res.cookie("shorttoken", shortToken);
         res.set("authorization", shortToken);
-        return res.redirect('send shortToken :\n'+shortToken+'\n'+'send longToken :\n'+longToken);
+        return res.send('send shortToken :\n'+shortToken+'\n'+'send longToken :\n'+longToken);
       });
     })(req, res, next);
 };
