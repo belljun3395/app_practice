@@ -14,4 +14,9 @@
 *       required:
 *       - email
 *       - password
+*   securitySchemes: 
+*    ApiKeyAuth: 
+*      type: apiKey
+*      name: api_key
+*      in: header
 */

@@ -15,6 +15,11 @@ const options = {
         url: "http://localhost:3000", 
       },
     ], 
+    security : [
+      {
+        ApiKeyAuth: []
+      }
+    ]
   },
   apis: ["./src/routes/swagger/*"], 
 }

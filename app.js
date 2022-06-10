@@ -10,7 +10,7 @@ var createError = require('http-errors'),
     passport = require('passport');
 
 const { swaggerUi, specs } = require('./src/modules/swagger');
-
+const sign = require('./src/function/checkAPIKey');
 // add config  
 var dotenv = require('dotenv'),
     passportConfig = require('./passport');
@@ -54,6 +54,8 @@ app.use(passport.session());
 
 // routerMiddleware  
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use(sign.checkApiKey);
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
