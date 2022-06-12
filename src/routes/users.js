@@ -4,7 +4,7 @@ var express = require('express'),
 
 
 var { verifyJwtToken, verifyCookieToken } =require('../middlewares/token')
-var { authenticate, join } = require('../middlewares/verify');
+var { authenticate, join, isLoggedIn } = require('../middlewares/verify');
 var { graphqlTest } = require('../middlewares/graphql');
 var { schema, rootValue } = require('../../grqphql/models/index')
 
