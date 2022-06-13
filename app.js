@@ -6,8 +6,8 @@ var createError = require('http-errors'),
     cookieParser = require('cookie-parser'),
     sequelize = require('./sequelize/models').sequelize,
     session = require('express-session'),
-    // redis = require('redis'),
-    // RedisStore = require('connect-redis')(session),
+    redis = require('redis'),
+    RedisStore = require('connect-redis')(session),
     bodyParser = require('body-parser'),
     passport = require('passport'),
     helmet = require('helmet'),
@@ -51,34 +51,27 @@ if(process.env.NODE_ENV==='production'){
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// const redisClient = redis.createClient({
-//   host: process.env.REDIS_HOST,
-//   port: process.env.REDIS_PORT,
-//   password: process.env.REDIS_PASSWORD,
-//   logError: true
-// });
+const redisClient = redis.createClient({
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  password: process.env.REDIS_PASSWORD,
+  legacyMode: true
+});
+redisClient.connect()
 const sessionOption = {
-  resave : false,
-  saveUninitialized : false,
-  secret : process.env.SESSION_SECRET,
-  cookie : {
-    httpOnly : true,
-    secure : false,
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: false,
   },
-  // store : new RedisStore({
-  //   client : clients,
-  //   host: process.env.REDIS_HOST,
-  //   port: process.env.REDIS_PORT,
-  //   password: process.env.REDIS_PASSWORD,
-  //   logError: true
-  // })
-}
+  store:  new RedisStore({ client: redisClient }),
+};
 if(process.env.NODE_ENV==='production'){
   sessionOption.proxy=true;
-  sessionOption.cookie.secure=true;
+  // sessionOption.cookie.secure=true;
 }
 app.use(session(sessionOption));
-
 app.use(passport.initialize());
 app.use(passport.session());
 
