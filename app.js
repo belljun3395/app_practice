@@ -41,6 +41,7 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '/src/public')));
 
 // middleware  
+app.use(logger('dev'));
 if(process.env.NODE_ENV==='production'){
   app.use(morgan('combined'));
   app.use(helmet());
@@ -65,7 +66,19 @@ const sessionOption = {
     httpOnly : true,
     secure : false,
   },
-}));
+  // store : new RedisStore({
+  //   client : clients,
+  //   host: process.env.REDIS_HOST,
+  //   port: process.env.REDIS_PORT,
+  //   password: process.env.REDIS_PASSWORD,
+  //   logError: true
+  // })
+}
+if(process.env.NODE_ENV==='production'){
+  sessionOption.proxy=true;
+  sessionOption.cookie.secure=true;
+}
+app.use(session(sessionOption));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -75,9 +88,18 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-app.use(sign.checkApiKey);
+app.use('/api-docs', sign.checkApiKey);
+
 
 // catch 404 and forward to error handler  
+app.use((req,res,next) => { 
+  const err = new Error('NotFound');
+  err.status=404;
+  logger.info('hello');
+  logger.error(err.message);
+  next(err);
+});
+
 app.use(function(req, res, next) {
   next(createError(404));
 });
