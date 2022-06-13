@@ -17,7 +17,7 @@ router.get('/login', verifyJwtToken, function(req,res) {
 
 router.post('/login', verifyCookieToken, authenticate );
 
-router.post('/loginjwt',  verifyJwtToken);
+router.post('/loginjwt',  verifyCookieToken);
 
 router.post('/image', multer.single("fieldName"), function(req,res){
     res.send(req.file)

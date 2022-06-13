@@ -2,15 +2,21 @@
 var createError = require('http-errors'),
     express = require('express'),
     path = require('path'),
-    logger = require('morgan'),
+    morgan = require('morgan'),
     cookieParser = require('cookie-parser'),
     sequelize = require('./sequelize/models').sequelize,
     session = require('express-session'),
+    // redis = require('redis'),
+    // RedisStore = require('connect-redis')(session),
     bodyParser = require('body-parser'),
-    passport = require('passport');
+    passport = require('passport'),
+    helmet = require('helmet'),
+    hpp = require('hpp');
 
 const { swaggerUi, specs } = require('./src/modules/swagger');
 const sign = require('./src/function/checkAPIKey');
+const logger = require('./logger/logger.js');
+
 // add config  
 var dotenv = require('dotenv'),
     passportConfig = require('./passport');
@@ -35,11 +41,23 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '/src/public')));
 
 // middleware  
-app.use(logger('dev'));
+if(process.env.NODE_ENV==='production'){
+  app.use(morgan('combined'));
+  app.use(helmet());
+  app.use(hpp());
+} else {
+  app.use(morgan('dev'));
+}
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({
+// const redisClient = redis.createClient({
+//   host: process.env.REDIS_HOST,
+//   port: process.env.REDIS_PORT,
+//   password: process.env.REDIS_PASSWORD,
+//   logError: true
+// });
+const sessionOption = {
   resave : false,
   saveUninitialized : false,
   secret : process.env.SESSION_SECRET,

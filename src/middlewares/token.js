@@ -100,6 +100,7 @@ exports.verifyToken = (req, res, next) => {
   
   exports.verifyJwtToken = (req, res, next) => {
     var headerAuth = req.header("authorization");
+    consoleWith("#", headerAuth)
     if( headerAuth == undefined ){
       res.redirect('/users/login');
     } else {
