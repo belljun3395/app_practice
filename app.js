@@ -41,7 +41,6 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '/src/public')));
 
 // middleware  
-app.use(logger('dev'));
 if(process.env.NODE_ENV==='production'){
   app.use(morgan('combined'));
   app.use(helmet());
