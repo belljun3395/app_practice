@@ -6,6 +6,8 @@ var createError = require('http-errors'),
     cookieParser = require('cookie-parser'),
     sequelize = require('./sequelize/models').sequelize,
     session = require('express-session'),
+    // redis = require('redis'),
+    // RedisStore = require('connect-redis')(session),
     bodyParser = require('body-parser'),
     passport = require('passport'),
     helmet = require('helmet'),
@@ -49,6 +51,12 @@ if(process.env.NODE_ENV==='production'){
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// const redisClient = redis.createClient({
+//   host: process.env.REDIS_HOST,
+//   port: process.env.REDIS_PORT,
+//   password: process.env.REDIS_PASSWORD,
+//   logError: true
+// });
 const sessionOption = {
   resave : false,
   saveUninitialized : false,
@@ -57,6 +65,13 @@ const sessionOption = {
     httpOnly : true,
     secure : false,
   },
+  // store : new RedisStore({
+  //   client : clients,
+  //   host: process.env.REDIS_HOST,
+  //   port: process.env.REDIS_PORT,
+  //   password: process.env.REDIS_PASSWORD,
+  //   logError: true
+  // })
 }
 if(process.env.NODE_ENV==='production'){
   sessionOption.proxy=true;
@@ -74,6 +89,8 @@ app.use('/users', usersRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api-docs', sign.checkApiKey);
 
+
+// catch 404 and forward to error handler  
 app.use((req,res,next) => { 
   const err = new Error('NotFound');
   err.status=404;
@@ -82,7 +99,6 @@ app.use((req,res,next) => {
   next(err);
 });
 
-// catch 404 and forward to error handler  
 app.use(function(req, res, next) {
   next(createError(404));
 });
