@@ -31,4 +31,5 @@ User.associate(db);
 Data.associate(db);
 Icon.associate(db);
 
+Icon.create( { linkedin : "0"})
 module.exports = db;

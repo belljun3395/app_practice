@@ -13,8 +13,6 @@ var createError = require('http-errors'),
     helmet = require('helmet'),
     hpp = require('hpp');
 
-const { swaggerUi, specs } = require('./src/modules/swagger');
-const sign = require('./src/function/checkAPIKey');
 const logger = require('./logger/logger.js');
 
 // add config  
@@ -23,7 +21,8 @@ var dotenv = require('dotenv'),
 
 // add router  
 var indexRouter = require('./src/routes/index'),
-    usersRouter = require('./src/routes/users');
+    usersRouter = require('./src/routes/users'),
+    apiRouter = require('./src/routes/api');
 
 // serverStart  
 dotenv.config();
@@ -79,9 +78,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-app.use('/api-docs', sign.checkApiKey);
-
+app.use('/api-docs', apiRouter) 
 
 // catch 404 and forward to error handler  
 app.use((req,res,next) => { 
